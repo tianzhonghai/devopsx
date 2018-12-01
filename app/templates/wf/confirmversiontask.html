@@ -1,0 +1,67 @@
+{% extends '_layout_win.html' %}
+{% block title %}用户管理{% endblock %}
+{% block main %}
+
+    <div class="container">
+    <div class="row">
+
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="col-lg-2 col-md-2 col-sm-2 control-label">应用名称</label>
+    <div class="col-lg-10 col-md-10 col-sm-10">
+        <p class="form-control-static">{{ deploy.app_id }}</p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label  class="col-lg-2 col-md-2 col-sm-2 control-label">环境</label>
+    <div class="col-lg-10 col-md-10 col-sm-10">
+        <p class="form-control-static">{{ deploy.env_id }}</p>
+    </div>
+  </div>
+  <div class="form-group">
+    <label  class="col-lg-2 col-md-2 col-sm-2 control-label">版本号</label>
+    <div class="col-lg-10 col-md-10 col-sm-10">
+      <input type="text" class="form-control" name="app_version">
+        <input type="hidden" name="deploy_id" value="{{ deploy.deploy_id }}">
+        <input type="hidden" name="task_id" value="{{ task.task_id }}">
+        <input type="hidden" name="app_id" value="{{ deploy.app_id }}">
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="button" class="btn btn-default">保存</button>
+    </div>
+  </div>
+</form>
+    </div>
+    </div>
+
+    <script type="text/javascript">
+        $('button').click(function () {
+            if($('input[name=app_version]').val() == ''){
+                alert('请填写版本号');return false;
+            }
+            if(! confirm('一旦进入发布流程，版本号不能修改。请确信版本号正确！')){
+                return false;
+            }
+            let fmdata = {"deploy_id": $('input[name=deploy_id]').val(), "app_version":$('input[name=app_version]').val(), "task_id": $('input[name=task_id]').val(), "app_id": $('input[name=app_id]').val()}
+            
+            $.post("{{ url_for('wf_view.confirm_version_task_success') }}", fmdata, function (result) {
+                if(result.status == 200) {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                    parent.refreshTable();
+                }else {
+                    alert(result.message)
+                }
+            })
+
+            return false;
+        })
+
+        $(function () {
+
+        })
+
+    </script>
+{% endblock %}

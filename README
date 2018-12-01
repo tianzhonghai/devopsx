@@ -1,0 +1,17 @@
+1、pip3 install -r requirements.txt
+
+2､celery启动
+celery worker -A celery_worker:celery --loglevel=INFO
+
+3、flask启动
+python(3) manage.py
+
+4、python 项目部署virtualenv
+http://www.cnblogs.com/xielisen/p/6832675.html
+source venv/bin/activate　　　　　　#激活环境
+deactivate                                     ＃退出虚拟环境
+
+5、启动gunicorn
+gunicorn manage:app
+如果是要处理高并发则要开多个进程和修改监听端口的画
+gunicorn -w 4 -b 127.0.0.1:8000 manage:app
