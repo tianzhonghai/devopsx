@@ -104,14 +104,14 @@ class ResultsCollector(CallbackBase):
 
     @staticmethod
     def add_task(deploy_id, result_status, result):
-        biztask = DeployItem.BizTask(deploy_id, result_status, result.task_name, result._host.get_name(), json.dumps(result._result))
-        db.session.add(biztask)
+        deployItem = DeployItem.DeployItem(deploy_id, result_status, result.task_name, result._host.get_name(), json.dumps(result._result))
+        db.session.add(deployItem)
         db.session.commit()
         db.session.close()
 
     @staticmethod
     def add_task_without_result(deploy_id, result_status, task_name):
-        biztask = DeployItem.BizTask(deploy_id, result_status, task_name, '', '')
-        db.session.add(biztask)
+        deployItem = DeployItem.DeployItem(deploy_id, result_status, task_name, '', '')
+        db.session.add(deployItem)
         db.session.commit()
         db.session.close()
