@@ -1,7 +1,7 @@
 from .. import celery, utils, db
 from multiprocessing import current_process
 from app.ansible_api.playbook_runner import PlaybookRunner
-from ..models import BizTask
+from ..models import DeployItem
 from ..service import wf_service
 
 

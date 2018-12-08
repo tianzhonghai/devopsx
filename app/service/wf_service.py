@@ -1,5 +1,5 @@
 from app import db
-from app.models import Deploy, BizApp, WfTask, WfTaskHist, BizTask
+from app.models import Deploy, BizApp, WfTask, WfTaskHist, DeployItem
 from app.utils import data_dicts, common_util
 
 
@@ -113,7 +113,7 @@ def publish_complete_task(deploy_id, app_id):
     """
     createdat = common_util.common_utls.get_format_time()
     # 所有任务都成功
-    deploy_tasks = db.session.query(BizTask.BizTask).filter_by(deploy_id=deploy_id).values('deploy_id', 'result_status')
+    deploy_tasks = db.session.query(DeployItem.BizTask).filter_by(deploy_id=deploy_id).values('deploy_id', 'result_status')
     flag = True
     for dt in deploy_tasks:
         if dt[1] != "ok":

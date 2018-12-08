@@ -6,7 +6,7 @@ from ansible.executor.playbook_executor import PlaybookExecutor
 from ansible.plugins.callback import CallbackBase
 import os, json
 from .. import utils, db
-from ..models import BizTask
+from ..models import DeployItem
 
 
 TEMPLATE_DIR = ""
@@ -104,14 +104,14 @@ class ResultsCollector(CallbackBase):
 
     @staticmethod
     def add_task(deploy_id, result_status, result):
-        biztask = BizTask.BizTask(deploy_id, result_status, result.task_name, result._host.get_name(), json.dumps(result._result))
+        biztask = DeployItem.BizTask(deploy_id, result_status, result.task_name, result._host.get_name(), json.dumps(result._result))
         db.session.add(biztask)
         db.session.commit()
         db.session.close()
 
     @staticmethod
     def add_task_without_result(deploy_id, result_status, task_name):
-        biztask = BizTask.BizTask(deploy_id, result_status, task_name, '', '')
+        biztask = DeployItem.BizTask(deploy_id, result_status, task_name, '', '')
         db.session.add(biztask)
         db.session.commit()
         db.session.close()
