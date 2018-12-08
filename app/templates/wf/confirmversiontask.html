@@ -21,7 +21,7 @@
   <div class="form-group">
     <label  class="col-lg-2 col-md-2 col-sm-2 control-label">版本号</label>
     <div class="col-lg-10 col-md-10 col-sm-10">
-      <input type="text" class="form-control" name="app_version">
+        <input type="text" class="form-control" name="app_version">
         <input type="hidden" name="deploy_id" value="{{ deploy.deploy_id }}">
         <input type="hidden" name="task_id" value="{{ task.task_id }}">
         <input type="hidden" name="app_id" value="{{ deploy.app_id }}">
@@ -44,7 +44,12 @@
             if(! confirm('一旦进入发布流程，版本号不能修改。请确信版本号正确！')){
                 return false;
             }
-            let fmdata = {"deploy_id": $('input[name=deploy_id]').val(), "app_version":$('input[name=app_version]').val(), "task_id": $('input[name=task_id]').val(), "app_id": $('input[name=app_id]').val()}
+            var fmdata = {
+                'deploy_id': $('input[name=deploy_id]').val(),
+                'app_version': $('input[name=app_version]').val(),
+                'task_id': $('input[name=task_id]').val(),
+                'app_id': $('input[name=app_id]').val()
+            }
             
             $.post("{{ url_for('wf_view.confirm_version_task_success') }}", fmdata, function (result) {
                 if(result.status == 200) {

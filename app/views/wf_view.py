@@ -155,8 +155,8 @@ def confirm_publish_task_success():
 
     bizapp = BizApp.BizApp.query.filter(BizApp.BizApp.app_id == app_id).first()
     # 调用celery开始发布
-    web_app_task.deploy_app_task_async.delay(deploy_id=deploy_id, bizapp=bizapp)
-    # web_app_task.deploy_app_task_async(deploy_id, bizapp)
+    # web_app_task.deploy_app_task_async.delay(deploy_id=deploy_id, bizapp=bizapp)
+    web_app_task.deploy_app_task_async(deploy_id, bizapp)
     return jsonify(result)
 
 

@@ -51,7 +51,7 @@ def confirm_version_task(task_id, deploy_id, app_id, version):
         'UPDATE biz_deploy SET app_version=:app_version, deploy_result=:deploy_result, wf_status=:wf_status WHERE deploy_id=:deploy_id',
         {"app_version": version, "deploy_result": data_dicts.DeployResultEnum.PENDING,
          "wf_status": data_dicts.WfActivityConst.confirmPublish, "deploy_id": deploy_id})
-    db.session.commit()
+    # db.session.commit()
     # get app info
     bizapp = BizApp.BizApp.query.filter(BizApp.BizApp.app_id == app_id).first()
     oldwftask = WfTask.WfTask.query.filter(WfTask.WfTask.task_id == task_id).first()
