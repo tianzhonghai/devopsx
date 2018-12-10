@@ -27,7 +27,7 @@
             striped: true, //是否显示行间隔色
             cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             pageNumber: 1, //初始化加载第10页，默认第一页
-            pageSize: 10, //每页的记录行数（*）
+            pageSize: 20, //每页的记录行数（*）
             pageList: [10, 20, 50, 100], //可供选择的每页的行数（*）
             //strictSearch: true,//设置为 true启用 全匹配搜索，false为模糊搜索
             showColumns: true, //显示内容列下拉框
@@ -39,7 +39,7 @@
             showToggle: false, //是否显示详细视图和列表视图的切换按钮
             cardView: false, //是否显示详细视图
             //detailView: true, //是否显示父子表，设置为 true 可以显示详细页面模式,在每行最前边显示+号
-            sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
+            sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
             columns: [{  //定义表头,这个表头必须定义,下边field后边跟的字段名字必须与后端传递的字段名字相同.如:id、name、price　跟后端的字段名id  name price是完全一样的.
                 field: 'app_id',
                 title: '应用',

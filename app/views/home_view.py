@@ -1,4 +1,4 @@
-from flask import (Blueprint, render_template, abort, request, redirect, url_for, flash)
+from flask import (Blueprint, render_template, abort, request, redirect, url_for, flash, jsonify)
 from jinja2 import TemplateNotFound
 from .. import login_manager
 from ..models import User
@@ -32,7 +32,7 @@ def get_recent_deploy_list():
     # page = offset / limit + 1
 
     task_proxy_result = db.session.execute(
-        """SELECT * FROM biz_deploy WHERE wf_status IN ('Publishing','Published','Test') ORDER BY deploy_id DESC LIMIT :start, :limit""",
+        """SELECT * FROM biz_deploy WHERE wf_status IN ('') ORDER BY deploy_id DESC LIMIT :start, :limit""",
         {'start': offset, 'limit': limit})
     dtos = []
     for rp in task_proxy_result:
@@ -44,15 +44,7 @@ def get_recent_deploy_list():
 
     task_proxy_result.close()
 
-    count_proxy_result = db.session.execute(
-        "SELECT COUNT(*) as total FROM biz_deploy WHERE wf_status IN ('Publishing','Published','Test')")
-    count_proxy_result_fetchone = count_proxy_result.fetchone()
-    count_proxy_result.close()
-    db.session.close()
-    total = count_proxy_result_fetchone.total
-
-    return jsonify({"total": total, "rows": dtos})
-
+    return jsonify({"total": dtos.count(), "rows": dtos})
 
 
 @home_view.route('/login', methods=['GET', 'POST'])
