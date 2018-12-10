@@ -4,6 +4,8 @@ from .. import login_manager
 from ..models import User
 from flask_login import login_user, logout_user
 import hashlib
+from .. import db
+from ..utils import common_util, data_dicts
 
 
 home_view = Blueprint('home_view', __name__)
@@ -19,7 +21,37 @@ def index():
 
 @home_view.route('/getrecentdeploylist')
 def get_recent_deploy_list():
+    limitstr = request.values.get("limit")
+    offsetstr = request.values.get("offset")
+    limit = 10
+    if limitstr.strip():
+        limit = int(limitstr)
+    offset = 0
+    if offsetstr.strip():
+        offset = int(offsetstr)
+    # page = offset / limit + 1
 
+    task_proxy_result = db.session.execute(
+        """SELECT * FROM biz_deploy WHERE wf_status IN ('Publishing','Published','Test') ORDER BY deploy_id DESC LIMIT :start, :limit""",
+        {'start': offset, 'limit': limit})
+    dtos = []
+    for rp in task_proxy_result:
+        vo = {"app_id": rp.app_id, "app_version": rp.app_version, "env_id": rp.env_id,
+              "deploy_result": data_dicts.DeployResultEnum.convert_to_desc(rp.deploy_result),
+              "created_at": rp.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+              "created_by": rp.creator_account, "wf_status": rp.wf_status}
+        dtos.append(vo)
+
+    task_proxy_result.close()
+
+    count_proxy_result = db.session.execute(
+        "SELECT COUNT(*) as total FROM biz_deploy WHERE wf_status IN ('Publishing','Published','Test')")
+    count_proxy_result_fetchone = count_proxy_result.fetchone()
+    count_proxy_result.close()
+    db.session.close()
+    total = count_proxy_result_fetchone.total
+
+    return jsonify({"total": total, "rows": dtos})
 
 
 
