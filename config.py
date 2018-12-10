@@ -24,7 +24,7 @@ class DevConfig(Config):
     DEBUG = True
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-                              'mysql+pymysql://test:111111@192.168.1.4:3306/glaucusdb?charset=utf8'
+                              'mysql+pymysql://root:mysql.com2017@106.14.96.72:3306/glaucus?charset=utf8'
 
 
 class TestingConfig(Config):

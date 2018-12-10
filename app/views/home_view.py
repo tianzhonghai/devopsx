@@ -17,6 +17,12 @@ def index():
         abort(404)
 
 
+@home_view.route('/getrecentdeploylist')
+def get_recent_deploy_list():
+
+
+
+
 @home_view.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == "POST":
