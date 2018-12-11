@@ -5,6 +5,7 @@ class DeployResultEnum:
     PENDING = 0
     SUCCESS = 1
     FAIL = 2
+    ROOLBACK = 3
 
     @staticmethod
     def convert_to_desc(val):
@@ -14,30 +15,31 @@ class DeployResultEnum:
             return "发布成功"
         elif val == 2:
             return "发布失败"
+        elif val == 3:
+            return "回滚"
 
 
 class WfActivityConst:
-    created = "Created"
-    confirmVersion = "ConfirmVersion"
-    confirmPublish = "ConfirmPublish"
-    publishing = "Publishing"
-    published = "Published"
+    """发布流程节点"""
+    new = "New"
+    version = "Version"
+    audit = "Audit"
+    deploy = "Deploy"
     test = "Test"
-    close = "Close"
+    complete = "Complete"
 
     @staticmethod
     def convert_to_desc(val):
-        if val == "Created":
-            return "新建"
-        if val == "ConfirmVersion":
+        if val == "New":
+            return "流程发起"
+        if val == "Version":
             return "版本确认"
-        if val == "ConfirmPublish":
-            return "确认发布"
-        if val == "Publishing":
-            return "发布中"
-        if val == "Published":
-            return "发布完成"
+        if val == "Audit":
+            return "发布审核"
+        if val == "Deploy":
+            return "系统部署"
         if val == "Test":
-            return "测试验证"
+            return "系统测试"
         if val == "Complete":
-            return "结束"
+            return "发布完成"
+
