@@ -13,7 +13,7 @@ def create_deploy_task(appid, envid, version, userid, username):
     :param username:
     :return:
     """
-    createdat = common_util.common_utls.get_format_time()
+    createdat = common_util.CommonUtils.get_format_time()
     # 创建发布任务
     bizapp = BizApp.BizApp.query.filter(BizApp.BizApp.app_id == appid).first()
     bizdeploy = Deploy.Deploy(appid, version, envid, userid, username, createdat,
@@ -46,7 +46,7 @@ def confirm_version_task(task_id, deploy_id, app_id, version):
     :param version:
     :return:
     """
-    createdat = common_util.common_utls.get_format_time()
+    createdat = common_util.CommonUtils.get_format_time()
     db.session.execute(
         'UPDATE biz_deploy SET app_version=:app_version, deploy_result=:deploy_result, wf_status=:wf_status WHERE deploy_id=:deploy_id',
         {"app_version": version, "deploy_result": data_dicts.DeployResultEnum.PENDING,
@@ -79,7 +79,7 @@ def confirm_publish_task(task_id, deploy_id, app_id):
     :param app_id:
     :return:
     """
-    createdat = common_util.common_utls.get_format_time()
+    createdat = common_util.CommonUtils.get_format_time()
     db.session.execute(
         'UPDATE biz_deploy SET deploy_result=:deploy_result, wf_status=:wf_status WHERE deploy_id=:deploy_id',
         {"deploy_result": data_dicts.DeployResultEnum.PENDING, "wf_status": data_dicts.WfActivityConst.publishing,
@@ -111,7 +111,7 @@ def publish_complete_task(deploy_id, app_id):
     :param app_id:
     :return:
     """
-    createdat = common_util.common_utls.get_format_time()
+    createdat = common_util.CommonUtils.get_format_time()
     # 所有任务都成功
     deploy_tasks = db.session.query(DeployItem.BizTask).filter_by(deploy_id=deploy_id).values('deploy_id', 'result_status')
     flag = True
@@ -148,7 +148,7 @@ def test_deploy_task(task_id, deploy_id, app_id, deploy_result):
     :param deploy_result:
     :return:
     """
-    createdat = common_util.common_utls.get_format_time()
+    createdat = common_util.CommonUtils.get_format_time()
     bizapp = BizApp.BizApp.query.filter(BizApp.BizApp.app_id == app_id).first()
     oldwftask = WfTask.WfTask.query.filter(WfTask.WfTask.task_id == task_id).first()
     if deploy_result == 1:
