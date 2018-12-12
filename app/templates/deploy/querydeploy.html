@@ -7,17 +7,18 @@
             <div class="form-inline">
                 <label >应用名称：</label>
                 <input type="text" class="form-control" id="txtAppName">
-                <button type="button" class="btn btn-default">查询</button>
+                <button type="button" class="btn btn-default" id="btnQuery">查询</button>
             </div>
         </div>
-        <table id="tbList" class="table table-bordered">
+        <table id="tbList" class="table table-bordered" data-query-params="queryParams" data-query-params-type="limit">
 
         </table>
     </div>
 
 <script type="text/javascript">
+    var oTableInit;
     $(function () {
-         $('#tbList').bootstrapTable({
+          oTableInit = $('#tbList').bootstrapTable({
             url: '{{ url_for("deploy_view.get_pending_list") }}',  // 请求数据源的路由
             dataType: "json",
             pagination: true, //前端处理分页
@@ -35,11 +36,12 @@
             minimumCountColumns: 2, //当列数小于此值时，将隐藏内容列下拉框
             clickToSelect: true, //设置true， 将在点击某行时，自动勾选rediobox 和 checkbox
             {#        height: 500, //表格高度，如果没有设置height属性，表格自动根据记录条数决定表格高度#}
-            uniqueId: "userid", //每一行的唯一标识，一般为主键列
+            uniqueId: "deploy_id", //每一行的唯一标识，一般为主键列
             showToggle: false, //是否显示详细视图和列表视图的切换按钮
             cardView: false, //是否显示详细视图
             //detailView: true, //是否显示父子表，设置为 true 可以显示详细页面模式,在每行最前边显示+号
             sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
+             //queryParams: buildQueryParams,
             columns: [{  //定义表头,这个表头必须定义,下边field后边跟的字段名字必须与后端传递的字段名字相同.如:id、name、price　跟后端的字段名id  name price是完全一样的.
                 field: 'app_id',
                 title: '应用',
@@ -82,20 +84,21 @@
         });
     })
 
-
-    function refershHostList() {
-        $('#tbhostlist').bootstrapTable('refresh');
+    function queryParams(params) {
+        var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                limit: params.limit,   //页面大小
+                offset: params.offset,  //页码
+                appname: $("#txtAppName").val()
+            };
+            return temp;
     }
 
-     $('#btnAdd').click(function () {
-        layer.open({
-          type: 2,
-          title: '创建发布任务',
-          shadeClose: false,
-          shade: 0.8,
-          area: ['800px', '60%'],
-          content: '{{ url_for('wf_view.add_deploy') }}'
-        });
+    function refreshTable() {
+        $('#tbList').bootstrapTable('refresh');
+    }
+
+    $('#btnQuery').click(function () {
+        refreshTable();
     })
 </script>
 {% endblock %}

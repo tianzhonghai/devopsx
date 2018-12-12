@@ -32,7 +32,8 @@ def get_recent_deploy_list():
     # page = offset / limit + 1
 
     task_proxy_result = db.session.execute(
-        """SELECT * FROM biz_deploy WHERE wf_status IN ('Complete') ORDER BY deploy_id DESC LIMIT :start, :limit""",
+        "SELECT * FROM biz_deploy WHERE wf_status IN ('"
+        + data_dicts.WfActivityConst.complete + "') ORDER BY deploy_id DESC LIMIT :start, :limit",
         {'start': offset, 'limit': limit})
     dtos = []
     for rp in task_proxy_result:

@@ -22,16 +22,20 @@ def pending_list():
 def get_pending_list():
     limitstr = request.values.get("limit")
     offsetstr = request.values.get("offset")
-    limit = 10
     if limitstr.strip():
         limit = int(limitstr)
     offset = 0
     if offsetstr.strip():
         offset = int(offsetstr)
     # page = offset / limit + 1
+    appname = request.values.get('appname')
+    sql = "SELECT * FROM biz_deploy WHERE wf_status = 'Complete' "
+    if appname is None:
+        sql += " AND app_id LIKE '%"+appname+"%'"
 
-    task_proxy_result = db.session.execute("""SELECT * FROM biz_deploy WHERE wf_status IN ('Publishing','Published','Test') ORDER BY deploy_id DESC LIMIT :start, :limit""",
-                                           {'start': offset, 'limit': limit})
+    sql += "ORDER BY deploy_id DESC LIMIT :start, :limit"
+
+    task_proxy_result = db.session.execute(sql, {'start': offset, 'limit': limit})
     dtos = []
     for rp in task_proxy_result:
         vo = {"app_id": rp.app_id, "app_version": rp.app_version, "env_id": rp.env_id,
