@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from jinja2 import TemplateNotFound
 from ..models import Deploy, BizApp, WfTask, WfTaskHist
 from .. import db
-from ..utils import common_util, data_dicts
+from ..utils import data_dicts
 from app.service import wf_service
 from ..tasks import web_app_task
 
