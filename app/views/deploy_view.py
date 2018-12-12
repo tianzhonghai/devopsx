@@ -10,15 +10,15 @@ from ..tasks import web_app_task
 deploy_view = Blueprint('deploy_view', __name__, template_folder='templates')
 
 
-@deploy_view.route('/deploy/pendinglist')
+@deploy_view.route('/deploy/querydeploy')
 def pending_list():
     try:
-        return render_template('deploy/pendinglist.html')
+        return render_template('deploy/querydeploy.html')
     except TemplateNotFound:
         abort(404)
 
 
-@deploy_view.route('/deploy/getpendinglist')
+@deploy_view.route('/deploy/doquerydeploy')
 def get_pending_list():
     limitstr = request.values.get("limit")
     offsetstr = request.values.get("offset")

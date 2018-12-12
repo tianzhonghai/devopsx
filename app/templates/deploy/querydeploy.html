@@ -1,32 +1,24 @@
 {% extends '_layout.html' %}
-{% block title %} 主页{% endblock %}
+{% block title %}主机管理{% endblock %}
 {% block main %}
+    <script type="text/javascript" src="/static/layer/layer.js"></script>
     <div class="container">
-        <div class="row">
-            <div id="divProjBar" style="width: 100%;height:400px;">
-
+        <div class="toolbar">
+            <div class="form-inline">
+                <label >应用名称：</label>
+                <input type="text" class="form-control" id="txtAppName">
+                <button type="button" class="btn btn-default">查询</button>
             </div>
         </div>
-        <div class="row">
+        <table id="tbList" class="table table-bordered">
 
-            <div id="toolbar">
-                <h3>最近发布</h3>
-            </div>
-            <table id="tbList" class="table table-bordered">
-            </table>
-            </div>
-        </div>
-
+        </table>
     </div>
 
-<script type="text/javascript" src="/static/echarts.common.min.js"></script>
 <script type="text/javascript">
     $(function () {
-        doRenderChart();
-
-
          $('#tbList').bootstrapTable({
-            url: '{{ url_for("home_view.get_recent_deploy_list") }}',  // 请求数据源的路由
+            url: '{{ url_for("deploy_view.get_pending_list") }}',  // 请求数据源的路由
             dataType: "json",
             pagination: true, //前端处理分页
             singleSelect: false,//是否只能单选
@@ -35,7 +27,7 @@
             striped: true, //是否显示行间隔色
             cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             pageNumber: 1, //初始化加载第10页，默认第一页
-            pageSize: 20, //每页的记录行数（*）
+            pageSize: 10, //每页的记录行数（*）
             pageList: [10, 20, 50, 100], //可供选择的每页的行数（*）
             //strictSearch: true,//设置为 true启用 全匹配搜索，false为模糊搜索
             showColumns: true, //显示内容列下拉框
@@ -47,7 +39,7 @@
             showToggle: false, //是否显示详细视图和列表视图的切换按钮
             cardView: false, //是否显示详细视图
             //detailView: true, //是否显示父子表，设置为 true 可以显示详细页面模式,在每行最前边显示+号
-            sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
+            sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
             columns: [{  //定义表头,这个表头必须定义,下边field后边跟的字段名字必须与后端传递的字段名字相同.如:id、name、price　跟后端的字段名id  name price是完全一样的.
                 field: 'app_id',
                 title: '应用',
@@ -79,7 +71,7 @@
 
             }, {
                 field: 'wf_status',
-                title: '流程阶段',
+                title: '阶段',
                 align: 'center',
 
             }
@@ -105,35 +97,5 @@
           content: '{{ url_for('wf_view.add_deploy') }}'
         });
     })
-
-    function doRenderChart() {
-         // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('divProjBar'));
-
-        // 指定图表的配置项和数据
-        var option = {
-            title: {
-                text: '项目活跃度'
-            },
-            tooltip: {},
-            legend: {
-                data:['最近一个月的发布量']
-            },
-            xAxis: {
-                data: ["tims","搜索","crm-scrm","crm-bonus","foliday-b2b","foliday-cms"]
-            },
-            yAxis: {},
-            series: [{
-                name: '发布量',
-                type: 'bar',
-                data: [5, 20, 36, 10, 10, 20]
-            }]
-        };
-
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
-    }
-
-
 </script>
 {% endblock %}
