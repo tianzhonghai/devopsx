@@ -3,8 +3,7 @@ from flask_login import login_required, current_user
 from jinja2 import TemplateNotFound
 from ..models import Deploy
 from .. import db
-from ..utils import common_util, data_dicts
-from ..tasks import web_app_task
+from ..utils import data_dicts
 
 
 deploy_view = Blueprint('deploy_view', __name__, template_folder='templates')
@@ -29,23 +28,26 @@ def get_pending_list():
         offset = int(offsetstr)
     # page = offset / limit + 1
     appname = request.values.get('appname')
-    sql = "SELECT * FROM biz_deploy WHERE wf_status = 'Complete' "
-    if appname is None:
-        sql += " AND app_id LIKE '%"+appname+"%'"
+    sql_select = "SELECT * FROM biz_deploy WHERE wf_status = '"+data_dicts.WfActivityConst.complete+"'"
+    sql_count = "SELECT COUNT(*) as total FROM biz_deploy WHERE wf_status = '"+data_dicts.WfActivityConst.complete+"'"
+    if appname is not None:
+        sql_select += " AND app_id LIKE '%"+appname+"%'"
+        sql_count += " AND app_id LIKE '%"+appname+"%'"
 
-    sql += "ORDER BY deploy_id DESC LIMIT :start, :limit"
+        sql_select += "ORDER BY deploy_id DESC LIMIT :start, :limit"
 
-    task_proxy_result = db.session.execute(sql, {'start': offset, 'limit': limit})
+    task_proxy_result = db.session.execute(sql_select, {'start': offset, 'limit': limit})
     dtos = []
     for rp in task_proxy_result:
         vo = {"app_id": rp.app_id, "app_version": rp.app_version, "env_id": rp.env_id,
-              "deploy_result":data_dicts.DeployResultEnum.convert_to_desc(rp.deploy_result), "created_at": rp.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+              "deploy_result":data_dicts.DeployResultEnum.convert_to_desc(rp.deploy_result),
+              "created_at": rp.created_at.strftime('%Y-%m-%d %H:%M:%S'),
               "created_by": rp.creator_account, "wf_status": rp.wf_status}
         dtos.append(vo)
 
     task_proxy_result.close()
 
-    count_proxy_result = db.session.execute("SELECT COUNT(*) as total FROM biz_deploy WHERE wf_status IN ('Publishing','Published','Test')")
+    count_proxy_result = db.session.execute(sql_count)
     count_proxy_result_fetchone = count_proxy_result.fetchone()
     count_proxy_result.close()
     db.session.close()
@@ -54,14 +56,6 @@ def get_pending_list():
     return jsonify({"total": total, "rows": dtos})
     # pagination = Deploy.Deploy.query.filter(Deploy.Deploy.wf_status._in(['Publishing', 'Published', 'Test'])).paginate(page, per_page=limit, error_out=False)
     # items = pagination.items
-    # vos = []
-    # for item in items:
-    #    vo = {"app_id": item.app_id, "app_version": item.app_version, "env_id": item.env_id,
-    #          "deploy_result":data_dicts.DeployResultEnum.convert_to_desc(item.deploy_result), "created_at": item.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-    #          "created_by": item.creator_account, "wf_status": item.wf_status}
-    #    vos.append(vo)
-
-    #return jsonify({"total": pagination.total, "rows": vos})
 
 
 @deploy_view.route('/deploy/myalldeploylist')
