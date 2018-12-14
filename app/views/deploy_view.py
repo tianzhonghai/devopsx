@@ -30,13 +30,14 @@ def get_pending_list():
     appname = request.values.get('appname')
     sql_select = "SELECT * FROM biz_deploy WHERE wf_status = '"+data_dicts.WfActivityConst.complete+"'"
     sql_count = "SELECT COUNT(*) as total FROM biz_deploy WHERE wf_status = '"+data_dicts.WfActivityConst.complete+"'"
-    if appname is not None:
-        sql_select += " AND app_id LIKE '%"+appname+"%'"
-        sql_count += " AND app_id LIKE '%"+appname+"%'"
+    if appname is not None and appname != '':
+        sql_select += " AND app_id LIKE :appname"
+        sql_count += " AND app_id LIKE :appname"
 
-        sql_select += "ORDER BY deploy_id DESC LIMIT :start, :limit"
+        sql_select += " ORDER BY deploy_id DESC LIMIT :start, :limit "
 
-    task_proxy_result = db.session.execute(sql_select, {'start': offset, 'limit': limit})
+    params = {'start': offset, 'limit': limit, 'appname': '%'+appname+'%'}
+    task_proxy_result = db.session.execute(sql_select, {'start': offset, 'limit': limit, 'appname': '%'+appname+'%'})
     dtos = []
     for rp in task_proxy_result:
         vo = {"app_id": rp.app_id, "app_version": rp.app_version, "env_id": rp.env_id,
@@ -47,14 +48,15 @@ def get_pending_list():
 
     task_proxy_result.close()
 
-    count_proxy_result = db.session.execute(sql_count)
+    count_proxy_result = db.session.execute(sql_count, params)
     count_proxy_result_fetchone = count_proxy_result.fetchone()
     count_proxy_result.close()
     db.session.close()
     total = count_proxy_result_fetchone.total
 
     return jsonify({"total": total, "rows": dtos})
-    # pagination = Deploy.Deploy.query.filter(Deploy.Deploy.wf_status._in(['Publishing', 'Published', 'Test'])).paginate(page, per_page=limit, error_out=False)
+    # pagination = Deploy.Deploy.query.filter(Deploy.Deploy.wf_status._in(['Publishing', 'Published', 'Test']))
+    # .paginate(page, per_page=limit, error_out=False)
     # items = pagination.items
 
 
