@@ -19,7 +19,7 @@
     var oTableInit;
     $(function () {
           oTableInit = $('#tbList').bootstrapTable({
-            url: '{{ url_for("deploy_view.get_pending_list") }}',  // 请求数据源的路由
+            url: '{{ url_for("deploy_view.do_query_deploy") }}',  // 请求数据源的路由
             dataType: "json",
             pagination: true, //前端处理分页
             singleSelect: false,//是否只能单选

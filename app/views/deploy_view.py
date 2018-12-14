@@ -10,7 +10,7 @@ deploy_view = Blueprint('deploy_view', __name__, template_folder='templates')
 
 
 @deploy_view.route('/deploy/querydeploy')
-def pending_list():
+def query_deploy():
     try:
         return render_template('deploy/querydeploy.html')
     except TemplateNotFound:
@@ -18,7 +18,7 @@ def pending_list():
 
 
 @deploy_view.route('/deploy/doquerydeploy')
-def get_pending_list():
+def do_query_deploy():
     limitstr = request.values.get("limit")
     offsetstr = request.values.get("offset")
     if limitstr.strip():
@@ -60,11 +60,11 @@ def get_pending_list():
     # items = pagination.items
 
 
-@deploy_view.route('/deploy/myalldeploylist')
+@deploy_view.route('/deploy/listmyqlldeploy')
 @login_required
-def my_all_deploy_list():
+def list_my_all_deploy():
     try:
-        return render_template('deploy/myalldeploylist.html')
+        return render_template('deploy/listalldeploy.html')
     except TemplateNotFound:
         abort(404)
 
