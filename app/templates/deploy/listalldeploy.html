@@ -18,7 +18,7 @@
 <script type="text/javascript">
     $(function () {
          $('#tbList').bootstrapTable({
-            url: '{{ url_for("deploy_view.get_my_all_deploy_list") }}',  // 请求数据源的路由
+            url: '{{ url_for("deploy_view.do_list_my_all_deploy") }}',  // 请求数据源的路由
             dataType: "json",
             pagination: true, //前端处理分页
             singleSelect: false,//是否只能单选

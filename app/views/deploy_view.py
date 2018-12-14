@@ -69,9 +69,9 @@ def list_my_all_deploy():
         abort(404)
 
 
-@deploy_view.route('/deploy/getmyalldeploylist')
+@deploy_view.route('/deploy/dolistmyalldeploy')
 @login_required
-def get_my_all_deploy_list():
+def do_list_my_all_deploy():
     current_user_id = current_user.userid
     limitstr = request.values.get("limit")
     offsetstr = request.values.get("offset")
